@@ -1,0 +1,94 @@
+_schema-version: "3.2"
+ID: tutorial-product
+description: A Fiori application.
+version: 0.0.1
+modules:
+- name: tutorial-product-dest-content
+  type: com.sap.application.content
+  requires:
+  - name: tutorial-product-dest-srv
+    parameters:
+      content-target: true
+  - name: tutorial-product-repo-host
+    parameters:
+      service-key:
+        name: tutorial-product-repo-host-key
+  - name: tutorial-product-uaa
+    parameters:
+      service-key:
+        name: tutorial-product-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: tutorial-product_repo_host
+          ServiceInstanceName: tutorial-product-html5-srv
+          ServiceKeyName: tutorial-product-repo-host-key
+          sap.cloud.service: tutorial-product
+        - Authentication: OAuth2UserTokenExchange
+          Name: tutorial-product_uaa
+          ServiceInstanceName: tutorial-product-xsuaa-srv
+          ServiceKeyName: tutorial-product-uaa-key
+          sap.cloud.service: tutorial-product
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: tutorial-product-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: tutorial-product-repo-host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - tutorialproduct.zip
+      name: tutorialproduct
+      target-path: resources/
+- name: tutorialproduct
+  type: html5
+  path: .
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: tutorial-product-dest-srv
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: tutorial-product-dest-srv
+    service-plan: lite
+- name: tutorial-product-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: tutorial-product-xsuaa-srv
+    service-plan: application
+- name: tutorial-product-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: tutorial-product-html5-srv
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
