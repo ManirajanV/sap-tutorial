@@ -60,21 +60,9 @@ resources:
 - name: northwind-destination-service
   type: org.cloudfoundry.managed-service
   parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
     service: destination
-    service-name: northwind-destination-service
     service-plan: lite
+    path: ./destination.json
 - name: northwind_html_repo_host
   type: org.cloudfoundry.managed-service
   parameters:
