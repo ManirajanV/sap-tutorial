@@ -1,0 +1,92 @@
+_schema-version: "3.2"
+ID: northwind
+version: 0.0.1
+modules:
+- name: northwind-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: northwind-destination-service
+    parameters:
+      content-target: true
+  - name: northwind_html_repo_host
+    parameters:
+      service-key:
+        name: northwind_html_repo_host-key
+  - name: uaa_northwind
+    parameters:
+      service-key:
+        name: uaa_northwind-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: northwind_service_northwind_html_repo_host
+          ServiceInstanceName: northwind-html5-app-host-service
+          ServiceKeyName: northwind_html_repo_host-key
+          sap.cloud.service: northwind.service
+        - Authentication: OAuth2UserTokenExchange
+          Name: northwind_service_uaa_northwind
+          ServiceInstanceName: northwind-xsuaa-service
+          ServiceKeyName: uaa_northwind-key
+          sap.cloud.service: northwind.service
+        existing_destinations_policy: ignore
+  build-parameters:
+    no-source: true
+- name: northwind-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: northwind_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - product.zip
+      name: product
+      target-path: resources/
+- name: product
+  type: html5
+  path: product
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: northwind-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: northwind-destination-service
+    service-plan: lite
+- name: northwind_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: northwind-html5-app-host-service
+    service-plan: app-host
+- name: uaa_northwind
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: northwind-xsuaa-service
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo
