@@ -13,6 +13,14 @@
                     "Type":"HTTP",
                     "URL" :"https://services.odata.org",
                     "HTML5DynamicDestination":true
+                },
+                {
+                    "Name": "ui5",
+                    "Description" : "UI5 Resources",
+                    "Authentication": "NoAuthentication",
+                    "ProxyType":"Internet",
+                    "Type":"HTTP",
+                    "URL" :"https://ui5.sap.com"
                 }
             ]
         }
