@@ -109,6 +109,13 @@
                     "target": [
                         "Targetmain"
                     ]
+                },
+                {
+                    "name": "RouteProductList",
+                    "pattern": "",
+                    "target": [
+                        "TargetProductList"
+                    ]
                 }
             ],
             "targets": {
@@ -118,6 +125,13 @@
                     "clearControlAggregation": false,
                     "viewId": "main",
                     "viewName": "main"
+                },
+                "TargetProductList": {
+                    "viewType": "XML",
+                    "transition": "slide",
+                    "clearControlAggregation": false,
+                    "viewId": "ProductList",
+                    "viewName": "productList"
                 }
             }
         }

@@ -1,0 +1,29 @@
+<mvc:View controllerName="product.controller.productList"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns:smartlist="sap.ui.comp.smartlist"
+    xmlns:smartfilterbar="sap.ui.comp.smartfilterbar"
+    xmlns="sap.m"
+    displayBlock="true">
+    <Page id="_idProductListPage"
+        title="Product List">
+        <smartfilterbar:SmartFilterBar id="ProductSmartFilter" entitySet="Products" >
+        </smartfilterbar:SmartFilterBar>
+        <smartlist:SmartList id="_idProductList" header="Product List"
+            showRowCount="true"
+            items="{
+                path: '/Products',
+                parameters: {
+                    expand: 'Category'
+                },
+                factory: '.productListFactory'                
+            }"
+            smartFilter="ProductSmartFilter"
+            >
+            <smartlist:dependents>
+				<core:Fragment fragmentName="product.view.productSimple" type="XML"/>
+			</smartlist:dependents>
+
+        </smartlist:SmartList>
+    </Page>
+</mvc:View>

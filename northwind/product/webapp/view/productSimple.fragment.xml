@@ -1,0 +1,24 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ObjectListItem
+        id="productSimple"
+        intro="{Category/CategoryName}"
+		title="{ProductID} - {ProductName}"
+        number="{UnitsInStock}"
+		numberUnit="{i18n>INR}"
+		numberState="{=${Discontinued}?'Error':'Success'}"
+        type="Active"
+		press="onItemSelected">
+        <attributes>
+            <ObjectAttribute title="" text="{=${Discontinued}?${i18n>Discontinued}:''}" />
+            <ObjectAttribute title="{i18n>QuantityPerUnit}" text="{QuantityPerUnit}" />
+        </attributes>
+        <firstStatus>
+            <ObjectStatus title="{i18n>UnitsInStock}" text="{UnitsInStock}"/>
+        </firstStatus>
+        <secondStatus>
+            <ObjectStatus title="{i18n>UnitsOnOrder}" text="{UnitsOnOrder}"/>
+        </secondStatus>
+	</ObjectListItem>
+</core:FragmentDefinition>
